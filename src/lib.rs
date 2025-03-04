@@ -102,7 +102,6 @@ impl MmlPlugin {
 
         if is_playing {
             for _ in 0..buffer.samples() {
-                nih_log!("pos_seconds: {}", pos_seconds);
                 for event in midi_handler.midi_events.iter_mut() {
                     let event_inner = match event {
                         Some(e) => e,
@@ -121,10 +120,6 @@ impl MmlPlugin {
                             }
                             midly::TrackEventKind::Midi { channel, message } => match message {
                                 midly::MidiMessage::NoteOn { key, vel } => {
-                                    if midi_handler.note_states[key.as_int() as usize] {
-                                        continue;
-                                    }
-
                                     midi_handler.note_states[key.as_int() as usize] = true;
 
                                     let note_on = NoteEvent::NoteOn {
@@ -195,7 +190,7 @@ impl Plugin for MmlPlugin {
     const MIDI_INPUT: MidiConfig = MidiConfig::Basic;
     const MIDI_OUTPUT: MidiConfig = MidiConfig::Basic;
 
-    const SAMPLE_ACCURATE_AUTOMATION: bool = true;
+    const SAMPLE_ACCURATE_AUTOMATION: bool = false;
 
     // If the plugin can send or receive SysEx messages, it can define a type to wrap around those
     // messages here. The type implements the `SysExMessage` trait, which allows conversion to and
